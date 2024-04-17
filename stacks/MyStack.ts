@@ -5,6 +5,8 @@ export function API({ stack }: StackContext) {
   const api = new Api(stack, "api", {
     routes: {
       "GET /": "packages/functions/src/lambda.handler",
+      "GET /all-jobs": 'packages/functions/src/all-jobs.handler',
+      "POST /all-jobs": 'packages/functions/src/all-jobs.handler',
     },
   });
 
