@@ -9,12 +9,13 @@ import {
     date,
   } from "drizzle-orm/pg-core";
   
-  export const expenses = pgTable(
-    "expenses",
+  export const jobs = pgTable(
+    "jobs",
     {
       id: serial("id").primaryKey(),
       userId: text("user_id").notNull(),
       title: varchar("title", { length: 100 }).notNull(),
+      company: varchar("company", { length: 100 }).notNull(),
       requirements: text("requirements"),
       date: date("date", { mode: "string" }).notNull(),
       createdAt: timestamp("created_at", { withTimezone: true })

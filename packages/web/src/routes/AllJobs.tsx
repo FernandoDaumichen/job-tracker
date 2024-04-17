@@ -1,5 +1,16 @@
+
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Skeleton } from "@/components/ui/skeleton"
+import { useQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router'
-import { useEffect, useState } from 'react'
 
 export const Route = createFileRoute('/AllJobs')({
   component: AllJobs
@@ -14,52 +25,72 @@ interface Jobs {
     date: string;
   }
   
-  function AllJobs() {
-    const [jobs, setJobs] = useState<Jobs[]>([]);
-  
-  
-    useEffect(() => {
-      async function fetchJobs() {
+  function AllJobs() {  
+      async function getAllJobs() {
         const res= await fetch(import.meta.env.VITE_APP_API_URL + "/all-jobs");
-        const data = await res.json();
-        setJobs(data.jobs);
+        if (!res.ok) {
+          throw new Error("Something went wrong while fetching the data");
+   
+        }  
+    return (await res.json()) as { jobs: Jobs[] };
       }
-      fetchJobs();
-    }, []);
-  
+
+      const {isPending, error, data } = useQuery({
+        queryKey: ["getAllJobs"],
+        queryFn: getAllJobs,
+      });
+      
+
     
   
-    return (
-      <div className="h-screen w-full flex flex-col items-center justify-center bg-gray-100 text-gray-800">
-        <div className="w-full max-w-4xl p-5 bg-white rounded-lg shadow-xl">
-          <h1 className="text-3xl font-semibold text-center mb-4">Jobs</h1>
-          <div className="overflow-x-auto">
-            <table className="w-full table-auto rounded-sm">
-              <thead className="bg-gray-200 text-gray-600">
-                <tr>
-                  <th className="p-3 text-left">Title</th>
-                  <th className="p-3 text-left">Company</th>
-                  <th className="p-3 text-left">Requirements</th>
-                  <th className="p-3 text-left">Date</th>
-                </tr>
-              </thead>
-              <tbody className="text-gray-700">
-                {jobs.map((job) => (
-                  <tr key={job.id} className="border-b border-gray-300">
-                    <td className="p-3">{job.title}</td>
-                    <td className="p-3">{job.company}</td>
-                    <td className="p-3">{job.requirements}</td>
-                    <td className="p-3">{job.date}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        
-        </div>
-      </div>
-    );
     
-  }
-  
-  
+  return (
+    <>
+      <h1 className="text-2xl">Jobs Applied</h1>
+      {error ? (
+        "An error has occurred: " + error.message
+      ) : (
+        <Table>
+          <TableCaption>Jobs List</TableCaption>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Title</TableHead>
+              <TableHead>Company</TableHead>
+              <TableHead>Requirements</TableHead>
+              <TableHead>Date</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {isPending ? (
+              <TableRow>
+                <TableCell className="font-medium">
+                  <Skeleton className="h-4 w-full"></Skeleton>
+                </TableCell>
+                <TableCell>
+                  <Skeleton className="h-4 w-full"></Skeleton>
+                </TableCell>
+                <TableCell>
+                  <Skeleton className="h-4 w-full"></Skeleton>
+                </TableCell>
+                <TableCell className="text-right">
+                  <Skeleton className="h-4 w-full"></Skeleton>
+                </TableCell>
+              </TableRow>
+            ) : (
+              data.jobs.map((job) => (
+                <TableRow key={job.id}>
+                  <TableCell className="font-medium">{job.title}</TableCell>
+                  <TableCell>{job.company}</TableCell>
+                  <TableCell>{job.requirements}</TableCell>
+                  <TableCell className="text-right">{job.date}</TableCell>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
+      )}
+    </>
+  );
+}
+
+export default AllJobs;

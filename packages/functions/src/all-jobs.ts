@@ -1,43 +1,27 @@
 import { Hono } from "hono";
 import { handle } from "hono/aws-lambda";
-
+import { jobs  as jobsTable } from "@job-tracker/core/db/schema/jobs";  
+import { db } from "@job-tracker/core/db";
 const app = new Hono();
-const fakeJobs = [
-    {
-        id: 1,
-        title: "Full Stack ",
-        company: "IDK1",
-        requirements: " Some requirements here",
-        date : "2021-09-01"
-    },
-    {
-        id: 2,
-        title: "Frontend Engineer",
-        company: "IDK2",
-        requirements: "Some requirements here2",
-        date : "2021-09-02"
-    },
-    {
-        id: 3,
-        title: "Backend Engineer",
-        company: "IDK3",
-        requirements: "Some requirements here3",
-        date : "2021-09-03"
-    },
-    ];
 
-app.get("/all-jobs", (c) => {
-  return c.json({ jobs: fakeJobs });
+
+app.get("/all-jobs", async(c) => {
+const jobs = await db 
+.select()
+.from(jobsTable)
+console.log(jobs|| "no jobs found")
+return c.json({ jobs });
 });
+
 
 app.post("/all-jobs", async(c) => {
     const body = await c.req.json();
-    const job=body.job;
-    fakeJobs.push({ ...job,
-        id: (fakeJobs.length + 1).toString(),
-       
-    });
-    return c.json({ jobs: fakeJobs });
+  const job = {
+    ...body.job,
+    userId:'qualquer'
+  }
+  const newJob = await db.insert(jobsTable).values(job).returning()
+    return c.json({ jobs: newJob });
   });
   
 export const handler = handle(app);
