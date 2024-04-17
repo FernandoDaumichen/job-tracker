@@ -11,8 +11,9 @@ import {
 import { Skeleton } from "@/components/ui/skeleton"
 import { useQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router'
+import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 
-export const Route = createFileRoute('/AllJobs')({
+export const Route = createFileRoute('/_authenticated/AllJobs')({
   component: AllJobs
 })
 
@@ -26,8 +27,20 @@ interface Jobs {
   }
   
   function AllJobs() {  
+          const { getToken } = useKindeAuth();
       async function getAllJobs() {
-        const res= await fetch(import.meta.env.VITE_APP_API_URL + "/all-jobs");
+
+
+        const token = await getToken();
+       if (!token) {
+         throw new Error("No token found");
+       }
+        const res= await fetch(import.meta.env.VITE_APP_API_URL + "/all-jobs",{
+          headers: {
+            Authorization: token,
+          },
+        });
+
         if (!res.ok) {
           throw new Error("Something went wrong while fetching the data");
    
