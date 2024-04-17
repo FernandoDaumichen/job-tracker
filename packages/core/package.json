@@ -7,11 +7,14 @@
     "typecheck": "tsc -noEmit"
   },
   "devDependencies": {
-    "vitest": "^1.5.0",
     "@types/node": "^20.12.7",
-    "sst": "^2.41.4"
+    "drizzle-kit": "^0.20.14",
+    "sst": "^2.41.4",
+    "vitest": "^1.5.0"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^0.9.1",
+    "drizzle-orm": "^0.30.8",
     "zod": "^3.22.4"
   }
 }
