@@ -26,6 +26,9 @@
     "packages/*"
   ],
   "dependencies": {
+    "@tanstack/react-router": "^1.28.4",
+    "@tanstack/router-devtools": "^1.28.4",
+    "@tanstack/router-vite-plugin": "^1.28.2",
     "hono": "^4.2.4"
   }
 }

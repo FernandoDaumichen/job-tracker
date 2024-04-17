@@ -1,6 +1,13 @@
 import { useEffect, useState } from "react";
 // import { Button } from "@/components/ui/button";
-import "./index.css";
+// import "./index.css";
+import { createFileRoute } from "@tanstack/react-router";
+
+
+export const Route = createFileRoute("/")({
+  component: HomePage,
+});
+
 
 interface Jobs {
   id: number;
@@ -10,12 +17,9 @@ interface Jobs {
   date: string;
 }
 
-function App() {
+function HomePage() {
   const [jobs, setJobs] = useState<Jobs[]>([]);
-  const [title, setTitle] = useState("");
-  const [company, setCompany] = useState("");
-  const [requirements, setRequirements] = useState("");
-  const [date, setDate] = useState("");
+
 
   useEffect(() => {
     async function fetchJobs() {
@@ -26,30 +30,7 @@ function App() {
     fetchJobs();
   }, []);
 
-  const handleSubmit = async (e: React.FormEvent) => {  
-    e.preventDefault();
-    const res = await fetch(
-      import.meta.env.VITE_APP_API_URL + "/all-jobs", 
-      {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-job: {
-        title,
-        company,
-        requirements,
-        date,
-      },}),
-    });
-    const data = await res.json();
-    setJobs(data.jobs);
-    setTitle("");
-    setCompany("");
-    setRequirements("");
-
-  }
+  
 
   return (
     <div className="h-screen w-full flex flex-col items-center justify-center bg-gray-100 text-gray-800">
@@ -78,7 +59,7 @@ job: {
           </table>
         </div>
   
-        <h2 className="text-2xl font-semibold text-center mt-6 mb-4">Add Job</h2>
+        {/* <h2 className="text-2xl font-semibold text-center mt-6 mb-4">Add Job</h2>
         <form onSubmit={handleSubmit} className="flex flex-col space-y-3">
           <input
             type="text"
@@ -109,11 +90,10 @@ job: {
             className="p-2 border rounded-lg"
           />
           <button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600">Add Job</button>
-        </form>
+        </form> */}
       </div>
     </div>
   );
   
 }
 
-export default App;
