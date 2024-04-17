@@ -50,7 +50,7 @@ job: {
     setCompany("");
     setRequirements("");
     console.log("done");
-      navigate({ to: "/all-jobs" });
+      navigate({ to: "/AllJobs" });
 
   }
 

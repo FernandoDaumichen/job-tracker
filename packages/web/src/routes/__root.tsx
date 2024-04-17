@@ -29,13 +29,13 @@ function RootLayout() {
             to="/AllJobs"
             className="[&.active]:text-foreground text-muted-foreground hover:text-foreground transition-colors"
           >
-            All Expenses
+            All Jobs
           </Link>{" "}
           <Link
             to="/AddNewJob"
             className="[&.active]:text-foreground text-muted-foreground hover:text-foreground transition-colors"
           >
-            New Expense
+            Add New Job
           </Link>
           {/* {isAuthenticated && ( */}
             <Link
