@@ -8,8 +8,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Calendar } from "@/components/ui/calendar";
+import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 
-export const Route = createFileRoute("/AddNewJob")({
+export const Route = createFileRoute("/_authenticated/AddNewJob")({
   component: JobAddPage,
 });
 
@@ -21,12 +22,21 @@ type Jobs = {
 };
 
 function JobAddPage() {
+  const { getToken } = useKindeAuth();
   const navigate = useNavigate({ from: "/AddNewJob" });
 
   const mutation = useMutation({
     mutationFn: async ({ data }: { data: Jobs }) => {
+      const token = await getToken();
+      if (!token) {
+        throw new Error("No token found");
+      }
       const res = await fetch(import.meta.env.VITE_APP_API_URL + "/all-jobs", {
         method: "POST",
+        headers: {
+          Authorization: token,
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({ job: data }),
       });
       if (!res.ok) {

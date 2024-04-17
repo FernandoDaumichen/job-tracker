@@ -6,7 +6,7 @@ import { createRootRouteWithContext } from "@tanstack/react-router";
 
 import { NotFound } from "@/components/not-found";
 
-// import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
+import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
@@ -16,7 +16,7 @@ export const Route = createRootRouteWithContext<{
 });
 
 function RootLayout() {
-//   const { isAuthenticated } = useKindeAuth();
+  const { isAuthenticated } = useKindeAuth();
   return (
     <>
       <div className="py-2 flex max-w-2xl mx-auto justify-between items-center ">
@@ -37,14 +37,14 @@ function RootLayout() {
           >
             Add New Job
           </Link>
-          {/* {isAuthenticated && ( */}
+          {isAuthenticated && (
             <Link
               to="/profile"
               className="[&.active]:text-foreground text-muted-foreground hover:text-foreground transition-colors"
             >
               Profile
             </Link>
-          {/* )} */}
+          )}
         </div>
       </div>
       <hr />

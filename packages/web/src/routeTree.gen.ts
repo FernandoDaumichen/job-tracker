@@ -11,62 +11,72 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as ProfileImport } from './routes/profile'
 import { Route as AboutImport } from './routes/about'
-import { Route as AllJobsImport } from './routes/AllJobs'
-import { Route as AddNewJobImport } from './routes/AddNewJob'
-import { Route as IndexImport } from './routes/index'
+import { Route as AuthenticatedImport } from './routes/_authenticated'
+import { Route as AuthenticatedIndexImport } from './routes/_authenticated/index'
+import { Route as AuthenticatedProfileImport } from './routes/_authenticated/profile'
+import { Route as AuthenticatedAllJobsImport } from './routes/_authenticated/AllJobs'
+import { Route as AuthenticatedAddNewJobImport } from './routes/_authenticated/AddNewJob'
 
 // Create/Update Routes
-
-const ProfileRoute = ProfileImport.update({
-  path: '/profile',
-  getParentRoute: () => rootRoute,
-} as any)
 
 const AboutRoute = AboutImport.update({
   path: '/about',
   getParentRoute: () => rootRoute,
 } as any)
 
-const AllJobsRoute = AllJobsImport.update({
-  path: '/AllJobs',
+const AuthenticatedRoute = AuthenticatedImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRoute,
 } as any)
 
-const AddNewJobRoute = AddNewJobImport.update({
-  path: '/AddNewJob',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const IndexRoute = IndexImport.update({
+const AuthenticatedIndexRoute = AuthenticatedIndexImport.update({
   path: '/',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+
+const AuthenticatedProfileRoute = AuthenticatedProfileImport.update({
+  path: '/profile',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+
+const AuthenticatedAllJobsRoute = AuthenticatedAllJobsImport.update({
+  path: '/AllJobs',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+
+const AuthenticatedAddNewJobRoute = AuthenticatedAddNewJobImport.update({
+  path: '/AddNewJob',
+  getParentRoute: () => AuthenticatedRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      preLoaderRoute: typeof IndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/AddNewJob': {
-      preLoaderRoute: typeof AddNewJobImport
-      parentRoute: typeof rootRoute
-    }
-    '/AllJobs': {
-      preLoaderRoute: typeof AllJobsImport
+    '/_authenticated': {
+      preLoaderRoute: typeof AuthenticatedImport
       parentRoute: typeof rootRoute
     }
     '/about': {
       preLoaderRoute: typeof AboutImport
       parentRoute: typeof rootRoute
     }
-    '/profile': {
-      preLoaderRoute: typeof ProfileImport
-      parentRoute: typeof rootRoute
+    '/_authenticated/AddNewJob': {
+      preLoaderRoute: typeof AuthenticatedAddNewJobImport
+      parentRoute: typeof AuthenticatedImport
+    }
+    '/_authenticated/AllJobs': {
+      preLoaderRoute: typeof AuthenticatedAllJobsImport
+      parentRoute: typeof AuthenticatedImport
+    }
+    '/_authenticated/profile': {
+      preLoaderRoute: typeof AuthenticatedProfileImport
+      parentRoute: typeof AuthenticatedImport
+    }
+    '/_authenticated/': {
+      preLoaderRoute: typeof AuthenticatedIndexImport
+      parentRoute: typeof AuthenticatedImport
     }
   }
 }
@@ -74,11 +84,13 @@ declare module '@tanstack/react-router' {
 // Create and export the route tree
 
 export const routeTree = rootRoute.addChildren([
-  IndexRoute,
-  AddNewJobRoute,
-  AllJobsRoute,
+  AuthenticatedRoute.addChildren([
+    AuthenticatedAddNewJobRoute,
+    AuthenticatedAllJobsRoute,
+    AuthenticatedProfileRoute,
+    AuthenticatedIndexRoute,
+  ]),
   AboutRoute,
-  ProfileRoute,
 ])
 
 /* prettier-ignore-end */
