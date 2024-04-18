@@ -1,7 +1,6 @@
 import { useForm } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
-// import { useState } from "react";
 import { zodValidator } from "@tanstack/zod-form-adapter";
 import { createFileRoute } from "@tanstack/react-router";
 import { Input } from "@/components/ui/input";
@@ -9,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Calendar } from "@/components/ui/calendar";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
-
+import { useState } from "react";
 export const Route = createFileRoute("/_authenticated/AddNewJob")({
   component: JobAddPage,
 });
@@ -19,18 +18,62 @@ type Jobs = {
   company: string;
   requirements: string;
   date: string;
+  imageUrl?: string;
 };
 
 function JobAddPage() {
   const { getToken } = useKindeAuth();
   const navigate = useNavigate({ from: "/AddNewJob" });
+  const [filePreviewURL, setFilePreviewURL] = useState<string | undefined>();
+
+
+  const computeSHA256 = async (file: File) => {
+    const buffer = await file.arrayBuffer();
+    const hashBuffer = await crypto.subtle.digest("SHA-256", buffer);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashHex = hashArray
+      .map((b) => b.toString(16).padStart(2, "0"))
+      .join("");
+    return hashHex;
+  };
 
   const mutation = useMutation({
-    mutationFn: async ({ data }: { data: Jobs }) => {
+    mutationFn: async ({ data, image  }: { data: Jobs , image?:File}) => {
       const token = await getToken();
       if (!token) {
         throw new Error("No token found");
       }
+      if (image){
+        const signedURLResponse = await fetch(import.meta.env.VITE_APP_API_URL + "/signed-url", {
+          method: "POST",
+          headers: {
+            Authorization: token,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            contentType: image.type,
+            contentLength: image.size,
+            checksum: await computeSHA256(image), 
+          }),
+        }
+      );
+      if (!signedURLResponse.ok) {
+        throw new Error("An error occurred while creating the expense");
+      }
+      const { url } = (await signedURLResponse.json()) as { url: string };
+// console.log(url);
+      await fetch(url, {
+        method: "PUT",
+        body: image,
+        headers: {
+          "Content-Type": image.type,
+        },
+      });
+
+      const imageUrl = url.split("?")[0];
+      // console.log(imageUrl);
+      data.imageUrl = imageUrl;
+    }
       const res = await fetch(import.meta.env.VITE_APP_API_URL + "/all-jobs", {
         method: "POST",
         headers: {
@@ -62,7 +105,7 @@ function JobAddPage() {
         requirements: value.requirements,
         date: value.date.toISOString().split("T")[0],
       };
-      await mutation.mutateAsync({ data });
+      await mutation.mutateAsync({ data, image: value.image});
       console.log("Job added successfully");
       navigate({ to: "/AllJobs" });
     },
@@ -141,7 +184,43 @@ function JobAddPage() {
               )}
             />
           </div>
-          <div>
+<div className="flex flex-col justify-center">
+          <div  className="flex justify-center">
+            <form.Field
+              name="image"
+              children={(field) => (
+                <Label>
+                  Job description image
+                  <Input
+                    type="file"
+                    accept="image/* "
+                    onBlur={field.handleBlur}
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (filePreviewURL) {
+                        URL.revokeObjectURL(filePreviewURL);
+                      }
+                      if (file) {
+                        const url = URL.createObjectURL(file);
+                        setFilePreviewURL(url);
+                      } else {
+                        setFilePreviewURL(undefined);
+                      }
+                      field.handleChange(file);
+                    }}
+                  />
+                  {filePreviewURL && (
+                    <img src={filePreviewURL}  className=" max-w-40 m-auto"alt="Job description image" />
+                  )}
+                  {field.state.meta.errors && (
+                    <em role="alert">{field.state.meta.errors.join(", ")}</em>
+                  )}
+                </Label>
+              )}
+            />
+          </div>
+
+          <div className="flex justify-center">
             <form.Field
               name="date"
               children={(field) => (
@@ -153,6 +232,8 @@ function JobAddPage() {
                 />
               )}
             />
+
+            </div>
           </div>
           <button
             type="submit"

@@ -18,6 +18,7 @@ import {
       company: varchar("company", { length: 100 }).notNull(),
       requirements: text("requirements"),
       date: date("date", { mode: "string" }).notNull(),
+      imageUrl: text("image_url"),
       createdAt: timestamp("created_at", { withTimezone: true })
         .notNull()
         .defaultNow(),
