@@ -49,6 +49,44 @@ function AllJobs() {
     queryFn: getAllJobs,
   });
 
+  async function deleteJob(jobId: number) {
+    const token = await getToken(); 
+    if (!token) {
+      alert("Authentication token is missing!");
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_APP_API_URL}/all-jobs`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: token,
+          },
+          body: JSON.stringify({ job: { id: jobId } }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to delete the job");
+        
+      }
+      location.reload();
+
+      const { jobs } = await response.json();
+      console.log("Deleted job:", jobs);
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error("Error deleting job:", error);
+        alert("Error deleting job: " + error.message);
+      } else {
+        console.error("An unknown error occurred:", error);
+      }
+    }
+  }
+
   return (
     <>
       <h1 className="text-2xl">Jobs Applied</h1>
@@ -109,6 +147,14 @@ function AllJobs() {
                     )}
                   </TableCell>{" "}
                   <TableCell className="text-center">{job.date}</TableCell>
+                  <TableCell className="text-center">
+                    <button
+                      className="bg-red-500 hover:bg-red-300 p-4 rounded-lg"
+                      onClick={() => deleteJob(job.id)}
+                    >
+                      Delete
+                    </button>
+                  </TableCell>
                 </TableRow>
               ))
             )}

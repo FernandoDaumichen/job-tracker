@@ -115,13 +115,15 @@ function JobAddPage() {
 
   return (
     <>
-      <h2 className="text-2xl font-semibold text-center mt-6 mb-4">Add Job</h2>
+    <div className="flex flex-col bg-white shadow-lg rounded-xl p-8">
+      <h2 className="text-2xl font-semibold text-center mt-6 mb-4  text-green-900 ">Add Job</h2>
       {mutation.isError && (
         <Alert>
           <AlertTitle>An error occurred while adding the job</AlertTitle>
           <AlertDescription>{mutation.error.message}</AlertDescription>
         </Alert>
       )}
+
       <form.Provider>
         <form
           onSubmit={(e) => {
@@ -266,12 +268,13 @@ function JobAddPage() {
           </div>
           <button
             type="submit"
-            className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600"
+            className="bg-custom-body-dark-300 text-white py-2 px-4 rounded-lg  hover:bg-green-900"
           >
             Add Job
           </button>
         </form>
       </form.Provider>
+      </div>
     </>
   );
 }
