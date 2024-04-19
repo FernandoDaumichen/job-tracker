@@ -35,4 +35,6 @@ app.post("/signed-url", authMiddleware, async (c) => {
 const url = await getSignedUrl(s3, putCommand, { expiresIn: 60 * 60 });
 return c.json({ url });
 });
+
+
 export const handler = handle(app);

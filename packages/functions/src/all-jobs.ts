@@ -32,4 +32,16 @@ app.post("/all-jobs",authMiddleware, async(c) => {
     return c.json({ jobs: newJob });
   });
   
+  app.delete("/all-jobs",authMiddleware, async(c) => {
+    const userId = c.var.userId;
+    const body = await c.req.json();
+    const job = {
+      ...body.job,
+      userId  
+    }
+    const newJob = await db.delete(jobsTable).where(eq(jobsTable.id,job.id)).returning()
+      return c.json({ jobs: newJob });
+    });
+
+    
 export const handler = handle(app);
