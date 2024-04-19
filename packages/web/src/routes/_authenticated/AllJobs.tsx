@@ -50,7 +50,7 @@ function AllJobs() {
   });
 
   async function deleteJob(jobId: number) {
-    const token = await getToken(); 
+    const token = await getToken();
     if (!token) {
       alert("Authentication token is missing!");
       return;
@@ -71,7 +71,6 @@ function AllJobs() {
 
       if (!response.ok) {
         throw new Error("Failed to delete the job");
-        
       }
       location.reload();
 
@@ -103,7 +102,7 @@ function AllJobs() {
               <TableHead className="text-center">
                 Job Image Desciption
               </TableHead>
-              <TableHead className="text-center">Date</TableHead>
+              <TableHead className="text-center">Data of the Application</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -130,8 +129,11 @@ function AllJobs() {
                 <TableRow key={job.id}>
                   <TableCell className="font-medium">{job.title}</TableCell>
                   <TableCell>{job.company}</TableCell>
-                  <TableCell>{job.requirements}</TableCell>
-                  <TableCell className="justify-center align-center flex">
+                  <TableCell className="whitespace-pre-wrap">
+                    {job.requirements}
+                  </TableCell>
+                  <TableCell >
+
                     {job.imageUrl && (
                       <a
                         href={job.imageUrl}
@@ -145,7 +147,7 @@ function AllJobs() {
                         />
                       </a>
                     )}
-                  </TableCell>{" "}
+                  </TableCell>
                   <TableCell className="text-center">{job.date}</TableCell>
                   <TableCell className="text-center">
                     <button

@@ -115,130 +115,42 @@ function JobAddPage() {
 
   return (
     <>
-    <div className="flex flex-col bg-white shadow-lg rounded-xl p-8">
-      <h2 className="text-2xl font-semibold text-center mt-6 mb-4  text-green-900 ">Add Job</h2>
-      {mutation.isError && (
-        <Alert>
-          <AlertTitle>An error occurred while adding the job</AlertTitle>
-          <AlertDescription>{mutation.error.message}</AlertDescription>
-        </Alert>
-      )}
+      <div className="flex flex-col bg-white shadow-lg rounded-xl p-8">
+        <h2 className="text-2xl font-semibold text-center mt-6 mb-4  text-green-900 ">
+          Add Job
+        </h2>
+        {mutation.isError && (
+          <Alert>
+            <AlertTitle>An error occurred while adding the job</AlertTitle>
+            <AlertDescription>{mutation.error.message}</AlertDescription>
+          </Alert>
+        )}
 
-      <form.Provider>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            void form.handleSubmit();
-          }}
-          className="flex flex-col space-y-3"
-        >
-          <div>
-            <form.Field
-              name="title"
-              children={(field) => (
-                <Label>
-                  Title
-                  <Input
-                    value={field.state.value}
-                    onBlur={field.handleBlur}
-                    style={{
-                      backgroundColor: "white",
-                      color: "black",
-                      borderColor: "gray",
-                    }}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                  />
-                  {field.state.meta.errors && (
-                    <em role="alert">{field.state.meta.errors.join(", ")}</em>
-                  )}
-                </Label>
-              )}
-            />
-          </div>
-          <div>
-            <form.Field
-              name="company"
-              children={(field) => (
-                <Label>
-                  Company
-                  <Input
-                    value={field.state.value}
-                    onBlur={field.handleBlur}
-                    style={{
-                      backgroundColor: "white",
-                      color: "black",
-                      borderColor: "gray",
-                    }}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                  />
-                  {field.state.meta.errors && (
-                    <em role="alert">{field.state.meta.errors.join(", ")}</em>
-                  )}
-                </Label>
-              )}
-            />
-          </div>
-          <div>
-            <form.Field
-              name="requirements"
-              children={(field) => (
-                <Label>
-                  Requirements
-                  <Input
-                    value={field.state.value}
-                    onBlur={field.handleBlur}
-                    style={{
-                      backgroundColor: "white",
-                      color: "black",
-                      borderColor: "gray",
-                    }}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                  />
-                  {field.state.meta.errors && (
-                    <em role="alert">{field.state.meta.errors.join(", ")}</em>
-                  )}
-                </Label>
-              )}
-            />
-          </div>
-          <div className="flex flex-col justify-center ">
-            <div className="flex justify-center pb-4">
+        <form.Provider>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              void form.handleSubmit();
+            }}
+            className="flex flex-col space-y-3"
+          >
+            <div>
               <form.Field
-                name="image"
+                name="title"
                 children={(field) => (
                   <Label>
-                    Job description image
+                    Title
                     <Input
-                      type="file"
-                      accept="image/* "
+                      value={field.state.value}
                       onBlur={field.handleBlur}
                       style={{
                         backgroundColor: "white",
                         color: "black",
                         borderColor: "gray",
                       }}
-                      onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (filePreviewURL) {
-                          URL.revokeObjectURL(filePreviewURL);
-                        }
-                        if (file) {
-                          const url = URL.createObjectURL(file);
-                          setFilePreviewURL(url);
-                        } else {
-                          setFilePreviewURL(undefined);
-                        }
-                        field.handleChange(file);
-                      }}
+                      onChange={(e) => field.handleChange(e.target.value)}
                     />
-                    {filePreviewURL && (
-                      <img
-                        src={filePreviewURL}
-                        className=" max-w-40 m-auto"
-                        alt="Job description image"
-                      />
-                    )}
                     {field.state.meta.errors && (
                       <em role="alert">{field.state.meta.errors.join(", ")}</em>
                     )}
@@ -246,34 +158,127 @@ function JobAddPage() {
                 )}
               />
             </div>
-
-            <div className="flex justify-center text-center">
-              <div className="p-2" >
-              <Label >
-                Date of the Application
+            <div>
               <form.Field
-                name="date"
+                name="company"
                 children={(field) => (
-                  <Calendar
-                    mode="single"
-                    selected={field.state.value}
-                    onSelect={(date) => field.handleChange(date || new Date())}
-                    className="rounded-md border"
-                  />
+                  <Label>
+                    Company
+                    <Input
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      style={{
+                        backgroundColor: "white",
+                        color: "black",
+                        borderColor: "gray",
+                      }}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                    />
+                    {field.state.meta.errors && (
+                      <em role="alert">{field.state.meta.errors.join(", ")}</em>
+                    )}
+                  </Label>
                 )}
               />
-            </Label>
             </div>
+            <div>
+              <form.Field
+                name="requirements"
+                children={(field) => (
+                  <Label>
+                    Requirements
+                    <textarea
+                      className="mt-1 block w-full h-48 p-2 border border-black rounded-md shadow-sm focus:border-black focus:ring focus:ring-black focus:ring-opacity-50"
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                    />
+                    {field.state.meta.errors && (
+                      <em role="alert" className="text-red-500">
+                        {field.state.meta.errors.join(", ")}
+                      </em>
+                    )}
+                  </Label>
+                )}
+              />
             </div>
-          </div>
-          <button
-            type="submit"
-            className="bg-custom-body-dark-300 text-white py-2 px-4 rounded-lg  hover:bg-green-900"
-          >
-            Add Job
-          </button>
-        </form>
-      </form.Provider>
+
+            <div className="flex flex-col justify-center ">
+              <div className="flex justify-center pb-4">
+                <form.Field
+                  name="image"
+                  children={(field) => (
+                    <Label>
+                      Job description image
+                      <Input
+                        type="file"
+                        accept="image/* "
+                        onBlur={field.handleBlur}
+                        style={{
+                          backgroundColor: "white",
+                          color: "black",
+                          borderColor: "gray",
+                        }}
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (filePreviewURL) {
+                            URL.revokeObjectURL(filePreviewURL);
+                          }
+                          if (file) {
+                            const url = URL.createObjectURL(file);
+                            setFilePreviewURL(url);
+                          } else {
+                            setFilePreviewURL(undefined);
+                          }
+                          field.handleChange(file);
+                        }}
+                      />
+                      {filePreviewURL && (
+                        <img
+                          src={filePreviewURL}
+                          className=" max-w-40 m-auto"
+                          alt="Job description image"
+                        />
+                      )}
+                      {field.state.meta.errors && (
+                        <em role="alert">
+                          {field.state.meta.errors.join(", ")}
+                        </em>
+                      )}
+                    </Label>
+                  )}
+                />
+              </div>
+
+              <div className="flex justify-center text-center">
+                <div className="p-2">
+                  <Label>
+                    Date of the Application
+                    <form.Field
+                      name="date"
+                      children={(field) => (
+                        <Calendar
+                          mode="single"
+                          selected={field.state.value}
+                          onSelect={(date) =>
+                            field.handleChange(date || new Date())
+                          }
+                          className="rounded-md border"
+                        />
+                      )}
+                    />
+                  </Label>
+                </div>
+              </div>
+            </div>
+            <button
+              type="submit"
+              className="bg-custom-body-dark-300 text-white py-2 px-4 rounded-lg  hover:bg-green-900"
+            >
+              Add Job
+            </button>
+          </form>
+        </form.Provider>
       </div>
     </>
   );
