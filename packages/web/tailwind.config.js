@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  darkMode: ["class"],
+  // darkMode: ["class"],
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
@@ -49,6 +49,21 @@ module.exports = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        'custom-black': {
+          100: '#111827 ', 
+        },
+        'custom-white': {
+          100: '#f0f0f0', 
+        },
+        'custom-header': {
+          100:'#56A3A6',
+          200: '#77CBB9',
+        },
+        'custom-body-dark': {
+          100:'#1E1E2E',
+          200:' #4F6D7A',
+          300:'#47796F',
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -69,6 +84,7 @@ module.exports = {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },
+      
     },
   },
   plugins: [require("tailwindcss-animate")],

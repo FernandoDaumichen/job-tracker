@@ -23,7 +23,7 @@ declare module "@tanstack/react-router" {
   }
 }
 
-ReactDOM.createRoot(document.getElementById("root")!).render(
+ReactDOM.createRoot(document.getElementById("root")! ).render(
   <React.StrictMode>
     <KindeProvider
       audience={import.meta.env.VITE_APP_KINDE_AUDIENCE}

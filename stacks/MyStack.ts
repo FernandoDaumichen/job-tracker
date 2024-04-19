@@ -32,6 +32,7 @@ export function API({ stack }: StackContext) {
       },
       "GET /all-jobs": "packages/functions/src/all-jobs.handler",
       "POST /all-jobs": "packages/functions/src/all-jobs.handler",
+      
       "POST /signed-url": {
         function:{
           environment:{

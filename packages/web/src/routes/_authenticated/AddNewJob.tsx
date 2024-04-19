@@ -26,7 +26,6 @@ function JobAddPage() {
   const navigate = useNavigate({ from: "/AddNewJob" });
   const [filePreviewURL, setFilePreviewURL] = useState<string | undefined>();
 
-
   const computeSHA256 = async (file: File) => {
     const buffer = await file.arrayBuffer();
     const hashBuffer = await crypto.subtle.digest("SHA-256", buffer);
@@ -38,42 +37,44 @@ function JobAddPage() {
   };
 
   const mutation = useMutation({
-    mutationFn: async ({ data, image  }: { data: Jobs , image?:File}) => {
+    mutationFn: async ({ data, image }: { data: Jobs; image?: File }) => {
       const token = await getToken();
       if (!token) {
         throw new Error("No token found");
       }
-      if (image){
-        const signedURLResponse = await fetch(import.meta.env.VITE_APP_API_URL + "/signed-url", {
-          method: "POST",
-          headers: {
-            Authorization: token,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            contentType: image.type,
-            contentLength: image.size,
-            checksum: await computeSHA256(image), 
-          }),
+      if (image) {
+        const signedURLResponse = await fetch(
+          import.meta.env.VITE_APP_API_URL + "/signed-url",
+          {
+            method: "POST",
+            headers: {
+              Authorization: token,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              contentType: image.type,
+              contentLength: image.size,
+              checksum: await computeSHA256(image),
+            }),
+          }
+        );
+        if (!signedURLResponse.ok) {
+          throw new Error("An error occurred while creating the expense");
         }
-      );
-      if (!signedURLResponse.ok) {
-        throw new Error("An error occurred while creating the expense");
-      }
-      const { url } = (await signedURLResponse.json()) as { url: string };
-// console.log(url);
-      await fetch(url, {
-        method: "PUT",
-        body: image,
-        headers: {
-          "Content-Type": image.type,
-        },
-      });
+        const { url } = (await signedURLResponse.json()) as { url: string };
+        // console.log(url);
+        await fetch(url, {
+          method: "PUT",
+          body: image,
+          headers: {
+            "Content-Type": image.type,
+          },
+        });
 
-      const imageUrl = url.split("?")[0];
-      // console.log(imageUrl);
-      data.imageUrl = imageUrl;
-    }
+        const imageUrl = url.split("?")[0];
+        // console.log(imageUrl);
+        data.imageUrl = imageUrl;
+      }
       const res = await fetch(import.meta.env.VITE_APP_API_URL + "/all-jobs", {
         method: "POST",
         headers: {
@@ -105,7 +106,7 @@ function JobAddPage() {
         requirements: value.requirements,
         date: value.date.toISOString().split("T")[0],
       };
-      await mutation.mutateAsync({ data, image: value.image});
+      await mutation.mutateAsync({ data, image: value.image });
       console.log("Job added successfully");
       navigate({ to: "/AllJobs" });
     },
@@ -139,6 +140,11 @@ function JobAddPage() {
                   <Input
                     value={field.state.value}
                     onBlur={field.handleBlur}
+                    style={{
+                      backgroundColor: "white",
+                      color: "black",
+                      borderColor: "gray",
+                    }}
                     onChange={(e) => field.handleChange(e.target.value)}
                   />
                   {field.state.meta.errors && (
@@ -157,6 +163,11 @@ function JobAddPage() {
                   <Input
                     value={field.state.value}
                     onBlur={field.handleBlur}
+                    style={{
+                      backgroundColor: "white",
+                      color: "black",
+                      borderColor: "gray",
+                    }}
                     onChange={(e) => field.handleChange(e.target.value)}
                   />
                   {field.state.meta.errors && (
@@ -175,6 +186,11 @@ function JobAddPage() {
                   <Input
                     value={field.state.value}
                     onBlur={field.handleBlur}
+                    style={{
+                      backgroundColor: "white",
+                      color: "black",
+                      borderColor: "gray",
+                    }}
                     onChange={(e) => field.handleChange(e.target.value)}
                   />
                   {field.state.meta.errors && (
@@ -184,55 +200,68 @@ function JobAddPage() {
               )}
             />
           </div>
-<div className="flex flex-col justify-center">
-          <div  className="flex justify-center">
-            <form.Field
-              name="image"
-              children={(field) => (
-                <Label>
-                  Job description image
-                  <Input
-                    type="file"
-                    accept="image/* "
-                    onBlur={field.handleBlur}
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (filePreviewURL) {
-                        URL.revokeObjectURL(filePreviewURL);
-                      }
-                      if (file) {
-                        const url = URL.createObjectURL(file);
-                        setFilePreviewURL(url);
-                      } else {
-                        setFilePreviewURL(undefined);
-                      }
-                      field.handleChange(file);
-                    }}
+          <div className="flex flex-col justify-center ">
+            <div className="flex justify-center pb-4">
+              <form.Field
+                name="image"
+                children={(field) => (
+                  <Label>
+                    Job description image
+                    <Input
+                      type="file"
+                      accept="image/* "
+                      onBlur={field.handleBlur}
+                      style={{
+                        backgroundColor: "white",
+                        color: "black",
+                        borderColor: "gray",
+                      }}
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (filePreviewURL) {
+                          URL.revokeObjectURL(filePreviewURL);
+                        }
+                        if (file) {
+                          const url = URL.createObjectURL(file);
+                          setFilePreviewURL(url);
+                        } else {
+                          setFilePreviewURL(undefined);
+                        }
+                        field.handleChange(file);
+                      }}
+                    />
+                    {filePreviewURL && (
+                      <img
+                        src={filePreviewURL}
+                        className=" max-w-40 m-auto"
+                        alt="Job description image"
+                      />
+                    )}
+                    {field.state.meta.errors && (
+                      <em role="alert">{field.state.meta.errors.join(", ")}</em>
+                    )}
+                  </Label>
+                )}
+              />
+            </div>
+
+            <div className="flex justify-center text-center">
+              <div className="p-2" >
+              <Label >
+                Date of the Application
+              <form.Field
+                name="date"
+                children={(field) => (
+                  <Calendar
+                    mode="single"
+                    selected={field.state.value}
+                    onSelect={(date) => field.handleChange(date || new Date())}
+                    className="rounded-md border"
                   />
-                  {filePreviewURL && (
-                    <img src={filePreviewURL}  className=" max-w-40 m-auto"alt="Job description image" />
-                  )}
-                  {field.state.meta.errors && (
-                    <em role="alert">{field.state.meta.errors.join(", ")}</em>
-                  )}
-                </Label>
-              )}
-            />
-          </div>
-
-          <div className="flex justify-center">
-            <form.Field
-              name="date"
-              children={(field) => (
-                <Calendar
-                  mode="single"
-                  selected={field.state.value}
-                  onSelect={(date) => field.handleChange(date || new Date())}
-                  className="rounded-md border"
-                />
-              )}
-            />
-
+                )}
+              />
+            </Label>
+            </div>
             </div>
           </div>
           <button
