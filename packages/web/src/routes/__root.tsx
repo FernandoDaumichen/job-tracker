@@ -8,7 +8,6 @@ import { NotFound } from "@/components/not-found";
 import { CgProfile } from "react-icons/cg";
 
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
-import Logo from "@/components/ui/logo";
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
 }>()({
@@ -20,35 +19,37 @@ function RootLayout() {
   const { isAuthenticated } = useKindeAuth();
   return (
     <>
-      <div className="py-2 flex max-w-2xl mx-auto justify-between items-center ">
+      <div className="p-6 w-full flex max-w-full mx-auto shadow-xl justify-between items-center bg-custom-header-200 dark:bg-custom-header-100">
         <Link to="/" className="text-2xl">
-          <Logo />
+        <div className="flex items-center">
+        <img src="/HIREFLOW2.png" alt="Logo" className="h-auto w-40 " />
+        </div>
         </Link>
         <div className="flex gap-x-4 items-center">
           <Link
             to="/AllJobs"
-            className="inline-flex items-center [&.active]:text-foreground text-muted-foreground hover:text-foreground transition-colors"
+            className="inline-flex items-center [&.active]:text-foreground dark:text-white text-muted-foreground hover:text-foreground transition-colors"
           >
             All Jobs
           </Link>
           <Link
             to="/AddNewJob"
-            className="inline-flex items-center [&.active]:text-foreground text-muted-foreground hover:text-foreground transition-colors"
+            className="inline-flex items-center [&.active]:text-foreground dark:text-white text-muted-foreground hover:text-foreground transition-colors"
           >
             Add New Job
           </Link>
           {isAuthenticated && (
             <Link
               to="/profile"
-              className="inline-flex items-center [&.active]:text-foreground text-muted-foreground hover:text-foreground transition-colors"
+              className="inline-flex items-center [&.active]:text-foreground dark:text-white text-muted-foreground hover:text-foreground transition-colors"
             >
-              <CgProfile className="w-8 h-auto" />
+              <CgProfile className=" dark:text-white w-8 h-auto" />
             </Link>
           )}
         </div>
       </div>
       <hr />
-      <div className="bg-background text-foreground flex flex-col m-10 gap-y-10 max-w-2xl mx-auto">
+      <div className="bg-background text-foreground flex flex-col m-10 gap-y-10 max-w-full mx-auto pl-12 pr-12 pt-8">
         <Outlet />
       </div>
     </>

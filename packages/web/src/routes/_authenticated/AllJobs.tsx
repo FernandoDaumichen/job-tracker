@@ -59,11 +59,13 @@ function AllJobs() {
           <TableCaption>Jobs List</TableCaption>
           <TableHeader>
             <TableRow>
-              <TableHead>Title</TableHead>
-              <TableHead>Company</TableHead>
-              <TableHead>Requirements</TableHead>
-              <TableHead>Job Image Desciption</TableHead>
-              <TableHead>Date</TableHead>
+              <TableHead className="text-left">Title</TableHead>
+              <TableHead className="text-left">Company</TableHead>
+              <TableHead className="text-left">Requirements</TableHead>
+              <TableHead className="text-center">
+                Job Image Desciption
+              </TableHead>
+              <TableHead className="text-center">Date</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -81,6 +83,9 @@ function AllJobs() {
                 <TableCell className="text-right">
                   <Skeleton className="h-4 w-full"></Skeleton>
                 </TableCell>
+                <TableCell className="text-center">
+                  <Skeleton className="h-4 w-full"></Skeleton>
+                </TableCell>
               </TableRow>
             ) : (
               data.jobs.map((job) => (
@@ -88,8 +93,22 @@ function AllJobs() {
                   <TableCell className="font-medium">{job.title}</TableCell>
                   <TableCell>{job.company}</TableCell>
                   <TableCell>{job.requirements}</TableCell>
-                  <TableCell>{job.imageUrl && (<img className="max-w-16"src={job.imageUrl}/>)}</TableCell>
-                  <TableCell className="text-right">{job.date}</TableCell>
+                  <TableCell className="justify-center align-center flex">
+                    {job.imageUrl && (
+                      <a
+                        href={job.imageUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <img
+                          className="w-28 h-28"
+                          src={job.imageUrl}
+                          alt={`Job at ${job.company}`}
+                        />
+                      </a>
+                    )}
+                  </TableCell>{" "}
+                  <TableCell className="text-center">{job.date}</TableCell>
                 </TableRow>
               ))
             )}
