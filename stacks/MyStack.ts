@@ -28,7 +28,7 @@ export function API({ stack }: StackContext) {
         authorizer: "none",
         function: {
           handler: "packages/functions/src/lambda.handler",
-        },
+        }, 
       },
       "GET /all-jobs": "packages/functions/src/all-jobs.handler",
       "POST /all-jobs": "packages/functions/src/all-jobs.handler",
